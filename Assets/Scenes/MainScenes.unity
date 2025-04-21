@@ -2991,7 +2991,7 @@ MonoBehaviour:
   playerHealth: {fileID: 1161701930}
   inventoryManager: {fileID: 2059049082}
   focusTimeController: {fileID: 1327345479}
-  levelGenerator: {fileID: 0}
+  levelGenerator: {fileID: 357426471}
   mainMenuPanel: {fileID: 0}
   hudPanel: {fileID: 0}
   pausePanel: {fileID: 0}
