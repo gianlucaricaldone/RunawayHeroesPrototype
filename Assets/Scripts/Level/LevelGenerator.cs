@@ -135,6 +135,13 @@ public class LevelGenerator : MonoBehaviour
         {
             return;
         }
+
+        // Verifica che l'array non sia vuoto
+        if (sectionPrefabs == null || sectionPrefabs.Length == 0)
+        {
+            Debug.LogError("No section prefabs assigned to LevelGenerator!");
+            return;
+        }
         
         // Select a random section prefab
         int randomIndex = Random.Range(0, sectionPrefabs.Length);

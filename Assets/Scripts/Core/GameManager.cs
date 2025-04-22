@@ -140,8 +140,33 @@ public class GameManager : MonoBehaviour
 
     public void ShowMainMenu()
     {
+        // Nasconde tutti gli altri panel
         HideAllPanels();
-        ShowPanel(mainMenuPanel);
+        
+        // Mostra il main menu panel
+        if (mainMenuPanel != null)
+        {
+            // Attiva il gameObject se non è attivo
+            mainMenuPanel.SetActive(true);
+            
+            // Gestione del CanvasGroup se presente
+            CanvasGroup canvasGroup = mainMenuPanel.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
+            }
+            
+            // Assicuriamoci che il pannello sia in primo piano
+            if (mainMenuPanel.transform.parent != null)
+            {
+                mainMenuPanel.transform.SetAsLastSibling();
+            }
+        }
+        
+        // Pausa il gioco mentre si è nel menu principale
+        PauseGame();
     }
 
     public void RestartLevel()
