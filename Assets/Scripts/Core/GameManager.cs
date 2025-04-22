@@ -71,49 +71,97 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        // Nasconde tutti i panel, incluso il menu principale
-        HideAllPanels();
-
-        if (mainMenuPanel != null)
-        {
-            CanvasGroup canvasGroup = mainMenuPanel.GetComponent<CanvasGroup>();
-            if (canvasGroup != null)
-            {
-                canvasGroup.alpha = 0f;
-                canvasGroup.interactable = false;
-                canvasGroup.blocksRaycasts = false;
-            }
-            mainMenuPanel.SetActive(false);
-        }
+        // Trova il MenuAnimator
+        MenuAnimator menuAnimator = mainMenuPanel.GetComponent<MenuAnimator>();
         
-        // Mostra solo l'HUD
-        if (hudPanel != null)
+        // Se esiste, usa l'animazione di uscita
+        if (menuAnimator != null)
         {
-            hudPanel.SetActive(true);
+            menuAnimator.AnimateMenuOut(() => {
+                // Questa funzione viene chiamata al termine dell'animazione
+                
+                // Nascondi definitivamente il menu
+                mainMenuPanel.SetActive(false);
+                
+                // Mostra l'HUD
+                if (hudPanel != null)
+                {
+                    hudPanel.SetActive(true);
+                    
+                    // Se l'HUD ha un CanvasGroup, assicurati che sia visibile
+                    CanvasGroup hudCanvasGroup = hudPanel.GetComponent<CanvasGroup>();
+                    if (hudCanvasGroup != null)
+                    {
+                        hudCanvasGroup.alpha = 1f;
+                        hudCanvasGroup.interactable = true;
+                        hudCanvasGroup.blocksRaycasts = true;
+                    }
+                }
+                
+                // Reset stats
+                distanceTraveled = 0f;
+                score = 0;
+                
+                // Attiva level generator
+                if (levelGenerator != null)
+                {
+                    levelGenerator.StartGenerator();
+                }
+                
+                // Imposta stato di gioco
+                isGameActive = true;
+                ResumeGame();
+            });
+        }
+        else
+        {
+            // Comportamento originale se non c'è l'animatore
             
-            // Se l'HUD ha un CanvasGroup, assicuriamoci che sia visibile e interagibile
-            CanvasGroup hudCanvasGroup = hudPanel.GetComponent<CanvasGroup>();
-            if (hudCanvasGroup != null)
+            // Nascondi tutti i pannelli
+            HideAllPanels();
+            
+            // Nascondi esplicitamente il menu
+            if (mainMenuPanel != null)
             {
-                hudCanvasGroup.alpha = 1f;
-                hudCanvasGroup.interactable = true;
-                hudCanvasGroup.blocksRaycasts = true;
+                CanvasGroup canvasGroup = mainMenuPanel.GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 0f;
+                    canvasGroup.interactable = false;
+                    canvasGroup.blocksRaycasts = false;
+                }
+                mainMenuPanel.SetActive(false);
             }
+            
+            // Mostra l'HUD
+            if (hudPanel != null)
+            {
+                hudPanel.SetActive(true);
+                
+                // Se l'HUD ha un CanvasGroup, assicurati che sia visibile
+                CanvasGroup hudCanvasGroup = hudPanel.GetComponent<CanvasGroup>();
+                if (hudCanvasGroup != null)
+                {
+                    hudCanvasGroup.alpha = 1f;
+                    hudCanvasGroup.interactable = true;
+                    hudCanvasGroup.blocksRaycasts = true;
+                }
+            }
+            
+            // Reset stats
+            distanceTraveled = 0f;
+            score = 0;
+            
+            // Attiva level generator
+            if (levelGenerator != null)
+            {
+                levelGenerator.StartGenerator();
+            }
+            
+            // Imposta stato di gioco
+            isGameActive = true;
+            ResumeGame();
         }
-        
-        // Reset stats
-        distanceTraveled = 0f;
-        score = 0;
-        
-        // Attiva level generator
-        if (levelGenerator != null)
-        {
-            levelGenerator.StartGenerator();
-        }
-        
-        // Imposta lo stato di gioco e riprendi
-        isGameActive = true;
-        ResumeGame();
     }
 
     public void PauseGame()
