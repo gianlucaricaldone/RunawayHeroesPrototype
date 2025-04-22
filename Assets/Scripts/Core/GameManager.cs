@@ -71,26 +71,47 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        // Hide all panels first
+        // Nasconde tutti i panel, incluso il menu principale
         HideAllPanels();
+
+        if (mainMenuPanel != null)
+        {
+            CanvasGroup canvasGroup = mainMenuPanel.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+            }
+            mainMenuPanel.SetActive(false);
+        }
         
-        // Show HUD
+        // Mostra solo l'HUD
         if (hudPanel != null)
         {
-            ShowPanel(hudPanel);
+            hudPanel.SetActive(true);
+            
+            // Se l'HUD ha un CanvasGroup, assicuriamoci che sia visibile e interagibile
+            CanvasGroup hudCanvasGroup = hudPanel.GetComponent<CanvasGroup>();
+            if (hudCanvasGroup != null)
+            {
+                hudCanvasGroup.alpha = 1f;
+                hudCanvasGroup.interactable = true;
+                hudCanvasGroup.blocksRaycasts = true;
+            }
         }
         
         // Reset stats
         distanceTraveled = 0f;
         score = 0;
         
-        // Activate level generator
+        // Attiva level generator
         if (levelGenerator != null)
         {
             levelGenerator.StartGenerator();
         }
         
-        // Unpause the game
+        // Imposta lo stato di gioco e riprendi
         isGameActive = true;
         ResumeGame();
     }
@@ -237,7 +258,7 @@ public class GameManager : MonoBehaviour
     {
         if (panel != null)
         {
-            // If it has CanvasGroup, we can fade out
+            // Se ha un CanvasGroup, impostiamo alpha a 0 e disabilitiamo interazioni
             CanvasGroup canvasGroup = panel.GetComponent<CanvasGroup>();
             if (canvasGroup != null)
             {
@@ -245,10 +266,11 @@ public class GameManager : MonoBehaviour
                 canvasGroup.interactable = false;
                 canvasGroup.blocksRaycasts = false;
             }
-            else
-            {
-                panel.SetActive(false);
-            }
+            
+            // Disattiviamo comunque il GameObject del panel
+            panel.SetActive(false);
         }
     }
+
+
 }

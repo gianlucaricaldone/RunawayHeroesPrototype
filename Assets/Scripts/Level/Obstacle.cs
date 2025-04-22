@@ -18,8 +18,17 @@ public class Obstacle : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        // Set layer to Obstacle
-        gameObject.layer = LayerMask.NameToLayer("Obstacle");
+        // Controlla se il layer esiste prima di assegnarlo
+        int obstacleLayer = LayerMask.NameToLayer("Obstacle");
+        if (obstacleLayer != -1)
+        {
+            gameObject.layer = obstacleLayer;
+        }
+        else
+        {
+            Debug.LogWarning("Layer 'Obstacle' not found! Using default layer instead.");
+            // Potresti usare un altro layer esistente o semplicemente non fare nulla
+        }
     }
 
     public void TakeDamage(int amount)
